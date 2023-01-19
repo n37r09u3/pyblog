@@ -1,0 +1,9 @@
+venv
+.idea/
+*.sqlite3
+*.sqlite
+*.db
+.env
+__pycache__
+geckodriver.log
+*.jsonl
