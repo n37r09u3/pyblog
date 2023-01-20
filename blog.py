@@ -261,7 +261,7 @@ class admin_import(BaseRequestHandler):
 from wsgiref.simple_server import make_server
 
 def main():
-    application = webapp2.WSGIApplication3(
+    application = webapp3.WSGIApplication3(
         [('/skin', ChangeTheme),
          ('/themes/[\\w\\-]+/templates/.*', Error404),
          ('/feed', FeedHandler),

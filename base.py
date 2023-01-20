@@ -1,6 +1,6 @@
 from functools import wraps
 
-import app.webapp as webapp2
+import app.webapp as webapp3
 from model import *
 
 logging.info('module base reloaded')
@@ -65,12 +65,12 @@ class Pager(object):
         return (results, links)
 
 
-class BaseRequestHandler(webapp2.RequestHandler):
+class BaseRequestHandler(webapp3.RequestHandler):
     def __init__(self):
         pass
 
     def initialize(self, request, response):
-        webapp2.RequestHandler.initialize(self, request, response)
+        webapp3.RequestHandler.initialize(self, request, response)
         self.blog = g_blog
         # self.login_user = users.get_current_user()
         # self.is_login = (self.login_user != None)
