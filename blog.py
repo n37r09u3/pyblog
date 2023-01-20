@@ -20,20 +20,21 @@ class MainPage(BasePublicPage):
                 return self.error(404)
 
         page = int(page)
-        max_page = (self.blog.entrycount - 1) / self.blog.posts_per_page
-
+       # max_page = (self.blog.entrycount - 1) / self.blog.posts_per_page
+        max_page=1
         if page < 0 or page > max_page:
             return self.error(404)
 
-        entries = Entry.all().filter('entrytype =', 'post'). \
-            filter("published =", True).order('-date')
-
-        show_prev = entries and (not (page == 0))
-        show_next = entries and (not (page == max_page))
-
+       # entries = Entry.all().filter('entrytype =', 'post'). \
+        #    filter("published =", True).order('-date')
+        entries =Entry.select().where(Entry.entrytype == 'post')
+        # show_prev = entries and (not (page == 0))
+        # show_next = entries and (not (page == max_page))
+        for e in entries:
+            print(e)
         self.render('index', {'entries': entries,
-                              'show_prev': show_prev,
-                              'show_next': show_next,
+                              # 'show_prev': show_prev,
+                              # 'show_next': show_next,
                               'pageindex': page
                               })
 

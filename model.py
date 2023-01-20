@@ -157,7 +157,7 @@ class Link(db.Model):
 
 class Entry(db.Model):
     author = CharField(null=True)
-    published = CharField(null=True)
+    published = BlobField(default=False)
     content = CharField(null=True)
     title = CharField(null=True)
     date =CharField(null=True)
@@ -283,7 +283,7 @@ class Comment(db.Model):
     def shortcontent(self, len=20):
         return self.content[:len]
 
-db.create_tables([Blog])
+db.create_tables([Blog,Entry,Category])
 # setting
 logging.info('module setting reloaded')
 try:

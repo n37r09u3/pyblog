@@ -4,7 +4,12 @@ import app.webapp as webapp2
 from model import *
 
 logging.info('module base reloaded')
+from jinja2 import Environment, PackageLoader, select_autoescape, FileSystemLoader
 
+env = Environment(
+    loader=FileSystemLoader("themes"),
+    autoescape=select_autoescape()
+)
 
 def requires_admin(method):
     @wraps(method)
@@ -98,6 +103,7 @@ class BaseRequestHandler(webapp2.RequestHandler):
         pass
 
     def error(self, errorcode, message='an error occured'):
+        print(errorcode)
         if errorcode == 404:
             message = 'Sorry, we were not able to find the requested page.  We have logged this error and will look into it.'
         elif errorcode == 403:
@@ -112,9 +118,8 @@ class BaseRequestHandler(webapp2.RequestHandler):
         errorfile = getattr(self.blog.theme, 'error' + str(errorcode))
         if not errorfile:
             errorfile = self.blog.theme.error
-        #self.response.out.write(template.render(errorfile, self.template_vals))
-        t= open('err.html','rb')
-        self.response.out.write(t.read())
+        self.response.out.write(template.render(errorfile, self.template_vals))
+
 
     def render_use_cache(self, template_file, values):
         """
@@ -140,10 +145,19 @@ class BaseRequestHandler(webapp2.RequestHandler):
         """
         Helper method to render the appropriate template
         """
-
+        from jinja2 import Template
+        #template = Template('Hello {{ name }}!')
+        template = env.get_template("default/2.html")
+        #template.render(name='John Doe')
         self.template_vals.update(template_vals)
         path = os.path.join(self.blog.rootdir, template_file)
-        self.response.out.write(template.render(path, self.template_vals))
+        s= template.render(self.template_vals)
+        #print(s)
+        self.response.out.write(s)
+
+
+
+
 
     def param(self, name, **kw):
         return self.request.get(name, **kw)
@@ -169,9 +183,9 @@ class BaseRequestHandler(webapp2.RequestHandler):
 class BasePublicPage(BaseRequestHandler):
     def initialize(self, request, response):
         BaseRequestHandler.initialize(self, request, response)
-        m_pages = Entry.all().filter('entrytype =', 'page').filter('published =', True).filter('entry_parent =', 0)
+        m_pages = Entry.select().where(Entry.entrytype =='page',Entry.published ==True,Entry.entry_parent ==0)
         self.template_vals.update({
             'menu_pages': m_pages,
-            'categories': Category.all(),
-            'recent_comments': Comment.all().order('-date').fetch(5)
+            'categories': Category.select(),
+            'recent_comments': Comment.select().order_by(Comment.date)
         })
