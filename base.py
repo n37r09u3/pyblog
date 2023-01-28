@@ -103,7 +103,6 @@ class BaseRequestHandler(webapp3.RequestHandler):
         pass
 
     def error(self, errorcode, message='an error occured'):
-        print(errorcode)
         if errorcode == 404:
             message = 'Sorry, we were not able to find the requested page.  We have logged this error and will look into it.'
         elif errorcode == 403:
@@ -152,7 +151,6 @@ class BaseRequestHandler(webapp3.RequestHandler):
         self.template_vals.update(template_vals)
         path = os.path.join(self.blog.rootdir, template_file)
         s= template.render(self.template_vals)
-        #print(s)
         self.response.out.write(s)
 
 

@@ -30,8 +30,7 @@ class MainPage(BasePublicPage):
         entries =Entry.select().where(Entry.entrytype == 'post')
         # show_prev = entries and (not (page == 0))
         # show_next = entries and (not (page == max_page))
-        for e in entries:
-            print(e)
+
         self.render('index', {'entries': entries,
                               # 'show_prev': show_prev,
                               # 'show_next': show_next,
@@ -258,28 +257,3 @@ class admin_import(BaseRequestHandler):
                     except:
                         pass
                     comment.put()
-from wsgiref.simple_server import make_server
-
-def main():
-    application = webapp3.WSGIApplication3(
-        [('/skin', ChangeTheme),
-         ('/themes/[\\w\\-]+/templates/.*', Error404),
-         ('/feed', FeedHandler),
-         ('/post_comment', Post_comment),
-         ('/page/(?P<page>\d+)', MainPage),
-         ('/admin/import', admin_import),
-         ('/category/(.*)', EntrysByCategory),
-         ('/tag/(.*)', EntrysByTag),
-
-         ('/', MainPage),
-         ('/([\\w\\-\\./]+)', SinglePost),
-
-         ('.*', Error404),
-
-         ], debug=True)
-    #wsgiref.handlers.CGIHandler().run(application)
-    httpd = make_server('', 8000, application)
-    httpd.serve_forever()
-
-if __name__ == "__main__":
-    main()
