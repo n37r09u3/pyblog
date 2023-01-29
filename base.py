@@ -1,9 +1,7 @@
-from functools import wraps
-
-import app.webapp as webapp3
+import web
 from model import *
 
-logging.info('module base reloaded')
+# logging.info('module base reloaded')
 from jinja2 import Environment, PackageLoader, select_autoescape, FileSystemLoader
 
 env = Environment(
@@ -11,66 +9,13 @@ env = Environment(
     autoescape=select_autoescape()
 )
 
-def requires_admin(method):
-    @wraps(method)
-    def wrapper(self, *args, **kwargs):
-        if not self.is_login:
-            #self.redirect(users.create_login_url(self.request.uri))
-            return
-        elif not self.is_admin:
-            return self.error(403)
-        else:
-            return method(self, *args, **kwargs)
 
-    return wrapper
-
-
-def printinfo(method):
-    @wraps(method)
-    def wrapper(self, *args, **kwargs):
-        print(self)  # .__name__
-        print(dir(self))
-        for x in self.__dict__:
-            print(x)
-        return method(self, *args, **kwargs)
-
-    return wrapper
-
-
-class Pager(object):
-
-    def __init__(self, model=None, query=None, items_per_page=10):
-        if model:
-            self.query = model.all()
-        elif query:
-            self.query = query
-
-        self.items_per_page = items_per_page
-
-    def fetch(self, p):
-        max_offset = self.query.count()
-        n = max_offset / self.items_per_page
-        if max_offset % self.items_per_page != 0:
-            n += 1
-
-        if p < 0 or p > n:
-            p = 1
-        offset = (p - 1) * self.items_per_page
-        results = self.query.fetch(self.items_per_page, offset)
-
-        links = {'prev': p - 1, 'next': p + 1, 'last': n}
-        if links['next'] > n:
-            links['next'] = 0
-
-        return (results, links)
-
-
-class BaseRequestHandler(webapp3.RequestHandler):
+class BaseRequestHandler(web.RequestHandler):
     def __init__(self):
         pass
 
     def initialize(self, request, response):
-        webapp3.RequestHandler.initialize(self, request, response)
+        web.RequestHandler.initialize(self, request, response)
         self.blog = g_blog
         # self.login_user = users.get_current_user()
         # self.is_login = (self.login_user != None)
@@ -110,15 +55,15 @@ class BaseRequestHandler(webapp3.RequestHandler):
         elif errorcode == 500:
             message = "Sorry, the server encountered an error.  We have logged this error and will look into it."
 
-#        self.template_vals.update({'errorcode': errorcode, 'message': message})
+        #        self.template_vals.update({'errorcode': errorcode, 'message': message})
         if errorcode > 0:
             self.response.set_status(errorcode)
 
         errorfile = getattr(self.blog.theme, 'error' + str(errorcode))
         if not errorfile:
             errorfile = self.blog.theme.error
-        self.response.out.write(template.render(errorfile, self.template_vals))
-
+        self.response.out.write("404")
+        # self.response.out.write(template.render(errorfile, self.template_vals))
 
     def render_use_cache(self, template_file, values):
         """
@@ -145,17 +90,13 @@ class BaseRequestHandler(webapp3.RequestHandler):
         Helper method to render the appropriate template
         """
         from jinja2 import Template
-        #template = Template('Hello {{ name }}!')
+        # template = Template('Hello {{ name }}!')
         template = env.get_template("default/2.html")
-        #template.render(name='John Doe')
+        # template.render(name='John Doe')
         self.template_vals.update(template_vals)
         path = os.path.join(self.blog.rootdir, template_file)
-        s= template.render(self.template_vals)
+        s = template.render(self.template_vals)
         self.response.out.write(s)
-
-
-
-
 
     def param(self, name, **kw):
         return self.request.get(name, **kw)
@@ -181,9 +122,9 @@ class BaseRequestHandler(webapp3.RequestHandler):
 class BasePublicPage(BaseRequestHandler):
     def initialize(self, request, response):
         BaseRequestHandler.initialize(self, request, response)
-        m_pages = Entry.select().where(Entry.entrytype =='page',Entry.published ==True,Entry.entry_parent ==0)
+        menu_pages = Entry.select().where(Entry.entrytype == 'page', Entry.published == True, Entry.entry_parent == 0)
         self.template_vals.update({
-            'menu_pages': m_pages,
+            'menu_pages': menu_pages,
             'categories': Category.select(),
             'recent_comments': Comment.select().order_by(Comment.date)
         })

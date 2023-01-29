@@ -1,6 +1,9 @@
-from base import *
 from datetime import datetime, timedelta
 import base64
+
+from base import BasePublicPage, BaseRequestHandler
+from web import requires_admin
+from model import *
 
 
 def doRequestHandle(old_handler, new_handler, **args):
@@ -10,7 +13,6 @@ def doRequestHandle(old_handler, new_handler, **args):
 
 class MainPage(BasePublicPage):
     def get(self, page=0):
-
         postid = self.param('p')
         if postid:
             try:
@@ -20,14 +22,14 @@ class MainPage(BasePublicPage):
                 return self.error(404)
 
         page = int(page)
-       # max_page = (self.blog.entrycount - 1) / self.blog.posts_per_page
-        max_page=1
+        # max_page = (self.blog.entrycount - 1) / self.blog.posts_per_page
+        max_page = 1
         if page < 0 or page > max_page:
             return self.error(404)
 
-       # entries = Entry.all().filter('entrytype =', 'post'). \
+        # entries = Entry.all().filter('entrytype =', 'post'). \
         #    filter("published =", True).order('-date')
-        entries =Entry.select().where(Entry.entrytype == 'post')
+        entries = Entry.select().where(Entry.entrytype == 'post')
         # show_prev = entries and (not (page == 0))
         # show_next = entries and (not (page == max_page))
 
@@ -36,6 +38,7 @@ class MainPage(BasePublicPage):
                               # 'show_next': show_next,
                               'pageindex': page
                               })
+        print(111)
 
 
 class EntrysByCategory(BasePublicPage):
@@ -74,9 +77,9 @@ class SinglePost(BasePublicPage):
     # @printinfo
     def get(self, slug=None, postid=None):
         if postid:
-            entries = Entry.all().filter("published =", True).filter('post_id =', postid).fetch(1)
+            entries = Entry.select().where(Entry.published == True).filter('post_id =', postid).fetch(1)
         else:
-            entries = Entry.all().filter("published =", True).filter('link =', slug).fetch(1)
+            entries = Entry.select().where(Entry.published == True).filter('link =', slug).fetch(1)
         if not entries or len(entries) == 0:
             return self.error(404)
 

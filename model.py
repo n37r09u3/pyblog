@@ -13,7 +13,6 @@ class Theme:
         self.mapping_cache = {}
         self.dir = '/themes/%s' % name
         self.viewdir = os.path.join(os.getcwd(), 'view')
-        print(self.name)
         self.server_dir = os.path.join(os.getcwd(), 'themes', self.name)
 
     def __getattr__(self, name):
@@ -55,6 +54,7 @@ class ThemeIterator:
             self.cursor += 1
             return (str(value), unicode(value))
 
+
 #
 # class BaseModel(db.Model):
 #     def __init__(self, parent=None, key_name=None, _app=None, **kwds):
@@ -83,7 +83,7 @@ class Person(Model):
     birthday = DateField()
 
     class Meta:
-        database = db # This model uses the "people.db" database.
+        database = db  # This model uses the "people.db" database.
 
 
 class Cache(db.Model):
@@ -105,12 +105,11 @@ class Blog(db.Model):
     entrycount = CharField(null=True)
     posts_per_page = CharField(null=True)
     feedurl = CharField(null=True)
-    blogversion =CharField(null=True)
+    blogversion = CharField(null=True)
     theme_name = CharField(default='default')
-    enable_memcache =CharField(null=True)
+    enable_memcache = CharField(null=True)
     link_format = CharField(null=True)
     theme = None
-
 
     def initialsetup(self):
         self.title = 'Your Blog Title'
@@ -136,12 +135,12 @@ class Category(db.Model):
 
 class Archive(db.Model):
     monthyear = CharField(null=True)
-    entrycount =CharField(null=True)
+    entrycount = CharField(null=True)
     date = CharField(null=True)
 
 
 class Tag(db.Model):
-    tag =CharField(null=True)
+    tag = CharField(null=True)
     tagcount = CharField(null=True)
 
     @property
@@ -152,7 +151,7 @@ class Tag(db.Model):
 class Link(db.Model):
     href = CharField(null=True)
     linktype = CharField(null=True)
-    linktext =CharField(null=True)
+    linktext = CharField(null=True)
 
 
 class Entry(db.Model):
@@ -160,13 +159,13 @@ class Entry(db.Model):
     published = BlobField(default=False)
     content = CharField(null=True)
     title = CharField(null=True)
-    date =CharField(null=True)
+    date = CharField(null=True)
     tags = CharField(null=True)
     categorie_keys = CharField(null=True)
     slug = CharField(null=True)
     link = CharField(null=True)
     monthyear = CharField(null=True)
-    entrytype =CharField(null=True)
+    entrytype = CharField(null=True)
     entry_parent = CharField(null=True)
     menu_order = CharField(null=True)
     commentcount = CharField(null=True)
@@ -271,7 +270,7 @@ class User(db.Model):
 
 
 class Comment(db.Model):
-    entry =CharField(null=True)
+    entry = CharField(null=True)
     date = CharField(null=True)
     content = CharField(null=True)
     author = CharField(null=True)
@@ -283,7 +282,8 @@ class Comment(db.Model):
     def shortcontent(self, len=20):
         return self.content[:len]
 
-db.create_tables([Blog,Entry,Category])
+
+db.create_tables([Blog, Entry, Category])
 # setting
 logging.info('module setting reloaded')
 try:

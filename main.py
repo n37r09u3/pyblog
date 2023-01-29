@@ -1,9 +1,10 @@
 from wsgiref.simple_server import make_server
-from blog import *
+from base import web
+from controller import *
 
 
 def main():
-    application = webapp3.WSGIApplication3(
+    application = web.WSGIApplication3(
         [('/skin', ChangeTheme),
          ('/themes/[\\w\\-]+/templates/.*', Error404),
          ('/feed', FeedHandler),
@@ -13,10 +14,11 @@ def main():
          ('/category/(.*)', EntrysByCategory),
          ('/tag/(.*)', EntrysByTag),
          ('/', MainPage),
+         ('/favicon.ico', Error404),
          ('/([\\w\\-\\./]+)', SinglePost),
          ('.*', Error404),
          ], debug=True)
-    #wsgiref.handlers.CGIHandler().run(application)
+    # wsgiref.handlers.CGIHandler().run(application)
     httpd = make_server('', 8000, application)
     print('http://localhost:8000/')
     httpd.serve_forever()

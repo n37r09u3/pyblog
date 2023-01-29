@@ -1,33 +1,8 @@
-import cgi,os
-#import StringIO
 import logging
 import re
-import sys
-import traceback
-#import urlparse
-import webob
-import wsgiref.headers
-import wsgiref.util
-from webapp3 import *
+from webapp3 import WSGIApplication, Request, Response
 
 RE_FIND_GROUPS = re.compile('\(.*?\)')
-class RequestHandler(RequestHandler):
-    def __init__(self):
-        self.template_vals = {}
-
-    def __before__(self,*args):
-        """
-        Allows common code to be used for all get/post/delete methods
-        """
-        pass
-
-    def __after__(self,*args):
-        """
-        This runs AFTER response is returned to browser.
-        If you have follow-up work that you don't want to do while
-        browser is waiting put it here such as sending emails etc
-        """
-        pass
 
 
 class WSGIApplication3(WSGIApplication):
@@ -37,6 +12,7 @@ class WSGIApplication3(WSGIApplication):
     AFTER RESPONSE.  This is important because it means you
     can do work after the response has been returned to the browser
     """
+
     def __init__(self, url_mapping, debug=False):
         """Initializes this application with the given URL mapping.
 
@@ -58,6 +34,7 @@ class WSGIApplication3(WSGIApplication):
 
         handler = None
         groups = ()
+        # print(request.path)
         for regexp, handler_class in self._url_mapping:
             match = regexp.match(request.path)
             if match:
@@ -70,7 +47,7 @@ class WSGIApplication3(WSGIApplication):
         if handler:
             try:
                 handler.__before__(*groups)
-                method = environ.get('REQUEST_METHOD',"GET")
+                method = environ.get('REQUEST_METHOD', "GET")
                 if method == 'GET':
                     handler.get(*groups)
                 elif method == 'POST':
@@ -90,11 +67,13 @@ class WSGIApplication3(WSGIApplication):
                 response.wsgi_write(start_response)
                 handler.__after__(*groups)
             except Exception as e:
+                # 输出handler处理异常
                 handler.handle_exception(e, self.__debug)
         else:
             response.set_status(404)
             response.wsgi_write(start_response)
-        return ['']
+        return [b'']
+
     def _init_url_mappings(self, handler_tuples):
         """Initializes the maps needed for mapping urls to handlers and handlers
         to urls.
