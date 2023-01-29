@@ -38,7 +38,6 @@ class MainPage(BasePublicPage):
                               # 'show_next': show_next,
                               'pageindex': page
                               })
-        print(111)
 
 
 class EntrysByCategory(BasePublicPage):
