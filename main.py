@@ -4,7 +4,7 @@ from controller import *
 
 
 def main():
-    application = web.WSGIApplication3(
+    application = web.MyWSGIApplication(
         [('/skin', ChangeTheme),
          ('/themes/[\\w\\-]+/templates/.*', Error404),
          ('/feed', FeedHandler),

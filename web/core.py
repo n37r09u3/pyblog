@@ -5,7 +5,7 @@ from webapp3 import WSGIApplication, Request, Response
 RE_FIND_GROUPS = re.compile('\(.*?\)')
 
 
-class WSGIApplication3(WSGIApplication):
+class MyWSGIApplication(WSGIApplication):
     """
     Modifyed to add new methods __before__ and __after__
     before the get/post/delete/etc methods and then

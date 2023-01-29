@@ -1,7 +1,7 @@
 from webapp3 import RequestHandler
 
 
-class RequestHandler(RequestHandler):
+class MyRequestHandler(RequestHandler):
     def __init__(self):
         self.template_vals = {}
 

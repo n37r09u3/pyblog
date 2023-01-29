@@ -45,9 +45,7 @@ from six.moves.urllib.parse import urlunsplit
 import webob
 from webob import exc
 
-
 _webapp = _webapp_util = _local = None
-
 
 try:  # pragma: no cover
     # WebOb < 1.0 (App Engine Python 2.5).
@@ -58,12 +56,10 @@ except ImportError:  # pragma: no cover
     from webob.util import status_reasons
     from webob.headers import ResponseHeaders as BaseResponseHeaders
 
-
 try:  # pragma no cover
     import html
 except ImportError:
     html = cgi
-
 
 # google.appengine.ext.webapp imports webapp3 in the
 # App Engine Python 2.7 runtime.
@@ -77,11 +73,11 @@ if os.environ.get('APPENGINE_RUNTIME') != 'python27':  # pragma: no cover
 try:  # pragma: no cover
     # Thread-local variables container.
     from webapp3_extras import local
+
     _local = local.Local()
 except ImportError:  # pragma: no cover
     logging.warning("webapp3_extras.local is not available "
                     "so webapp3 won't be thread-safe!")
-
 
 __version_info__ = (3, 0, 0)
 __version__ = '.'.join(str(n) for n in __version_info__)
@@ -669,6 +665,7 @@ class RequestHandler(object):
         .. seealso:: :meth:`Router.build`.
         """
         return self.app.router.build(self.request, _name, args, kwargs)
+
     # Alias.
     url_for = uri_for
 
@@ -684,9 +681,6 @@ class RequestHandler(object):
             True if the web application is running in debug mode.
         """
         raise
-
-
-
 
 
 class RedirectHandler(RequestHandler):
@@ -1090,8 +1084,8 @@ class Route(BaseRoute):
 
     def __repr__(self):
         return '<Route(%r, %r, name=%r, defaults=%r, build_only=%r)>' % \
-               (self.template, self.handler, self.name, self.defaults,
-                self.build_only)
+            (self.template, self.handler, self.name, self.defaults,
+             self.build_only)
 
 
 class BaseHandlerAdapter(object):

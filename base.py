@@ -10,12 +10,12 @@ env = Environment(
 )
 
 
-class BaseRequestHandler(web.RequestHandler):
+class BaseRequestHandler(web.MyRequestHandler):
     def __init__(self):
         pass
 
     def initialize(self, request, response):
-        web.RequestHandler.initialize(self, request, response)
+        web.MyRequestHandler.initialize(self, request, response)
         self.blog = g_blog
         # self.login_user = users.get_current_user()
         # self.is_login = (self.login_user != None)
