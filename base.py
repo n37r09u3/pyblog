@@ -91,7 +91,7 @@ class BaseRequestHandler(web.MyRequestHandler):
         """
         from jinja2 import Template
         # template = Template('Hello {{ name }}!')
-        template = env.get_template("default/2.html")
+        template = env.get_template(f"default/{template_file}.html")
         # template.render(name='John Doe')
         self.template_vals.update(template_vals)
         path = os.path.join(self.blog.rootdir, template_file)
