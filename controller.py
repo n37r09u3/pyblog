@@ -2,7 +2,7 @@ from datetime import datetime, timedelta
 import base64
 
 from base import BasePublicPage, BaseRequestHandler
-from web import requires_admin
+from web import requires_admin, Pager
 from model import *
 
 
@@ -110,13 +110,14 @@ class SinglePost(BasePublicPage):
 class FeedHandler(BaseRequestHandler):
     def get(self, tags=None):
         entries = Entry.all().filter('entrytype =', 'post').order('-date').fetch(10)
+        last_updated = ''
         if entries and entries[0]:
             last_updated = entries[0].date
             last_updated = last_updated.strftime("%Y-%m-%dT%H:%M:%SZ")
         for e in entries:
             e.formatted_date = e.date.strftime("%Y-%m-%dT%H:%M:%SZ")
         self.response.headers['Content-Type'] = 'application/atom+xml'
-        self.render2('views/atom.xml', {'entries': entries, 'last_updated': last_updated})
+        self.render('views/atom.xml', {'entries': entries, 'last_updated': last_updated})
 
 
 class Error404(BaseRequestHandler):

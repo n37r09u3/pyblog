@@ -7,4 +7,7 @@
 1 去除gae独立运行
 2 使用python3
 
+#run with wsgi server
 
+pip install waitress
+waitress-serve --port=8080 app:application
